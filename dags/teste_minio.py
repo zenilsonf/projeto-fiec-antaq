@@ -7,7 +7,7 @@ import io
 import pendulum
 
 # Configurações do MinIO
-MINIO_URL = "172.26.0.4:9000"  # Remove "http://" prefix
+MINIO_URL = "192.168.1.100:9000"  # Remove "http://" prefix
 MINIO_ACCESS_KEY = "minioadmin"  # Substitua pela sua chave de acesso
 MINIO_SECRET_KEY = "minioadmin"  # Substitua pela sua chave secreta
 BUCKET_NAME = "vendas"

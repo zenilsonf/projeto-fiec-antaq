@@ -2,32 +2,45 @@ services:
   minio:
     image: quay.io/minio/minio
     networks:
-      - airflow
+      airflow:
+        ipv4_address: 192.168.1.100  # IP fixo para o MinIO
     command: server /data --console-address ":9001"
     ports:
       - 9000:9000
       - 9001:9001
     volumes:
-       - ${PWD}/include/minio:/data
+      - ${PWD}/include/minio:/data
     extra_hosts:
-      - "host.docker.internal:host-gateway"  
+      - "host.docker.internal:host-gateway"
     restart: always
     env_file: .env
+
   scheduler:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
       - 8501:8501
       - 8502:8502
+    networks:
+      - airflow
+
   webserver:
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - airflow
+
   triggerer:
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - airflow
+
   postgres:
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - airflow
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:latest
@@ -41,6 +54,13 @@ services:
     volumes:
       - sqlserver_data:/var/opt/mssql
     restart: always
+
+networks:
+  airflow:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24  # Sub-rede para IPs fixos
 
 volumes:
   sqlserver_data:
